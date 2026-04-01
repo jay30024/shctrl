@@ -4,15 +4,6 @@
 
 It turns natural language into shell-ready commands, looks up relevant internal runbooks/playbooks when available, scores command risk deterministically, and writes an annotated command into the active shell buffer so the user stays in control.
 
-## Why This Project Stands Out
-
-- Terminal-native workflow instead of a separate chat window
-- Local-first architecture using Ollama for privacy-conscious inference
-- Hybrid retrieval across internal command playbooks and platform runbooks
-- Deterministic risk scoring with short inline explanations
-- PowerShell, Bash, and Zsh integrations
-- Local telemetry for evaluation metrics such as first-try success, edit-before-execute rate, retrieval grounding rate, and time to execution
-
 ## Core Features
 
 - Natural language to shell command generation
@@ -31,26 +22,6 @@ find /tmp -name '*.log' -type f -mtime +7 -delete # Risk 78/100: high-risk comma
   - Zsh via `zle` widget hooks
 - Local telemetry and evaluation reporting
 - Graceful fallback to retrieved commands if Ollama is temporarily unavailable and the runbook already contains a command template
-
-## Architecture
-
-```mermaid
-flowchart LR
-    A["User intent in terminal"] --> B["Context collector"]
-    B --> C["Hybrid retriever"]
-    B --> D["Prompt builder"]
-    C --> D
-    D --> E["Ollama local model"]
-    E --> F["Deterministic risk engine"]
-    C --> F
-    F --> G["Annotated command"]
-    G --> H["Shell buffer integrator"]
-    G --> I["Telemetry store"]
-    H --> J["User edits or executes"]
-    J --> I
-```
-
-More detail is in [docs/architecture.md](docs/architecture.md).
 
 ## Repository Layout
 
@@ -109,47 +80,6 @@ shctrl index examples/knowledge
 shctrl suggest "restart the log service and verify health" --shell powershell
 ```
 
-### 6. Inspect health
-
-```bash
-shctrl doctor
-```
-
-## Shell Integration
-
-### PowerShell
-
-Add this to your PowerShell profile:
-
-```powershell
-Import-Module "C:\path\to\repo\integrations\powershell\Shctrl.psm1"
-Register-Shctrl
-```
-
-Press `Ctrl+g` to ask `shctrl` to replace the current line with an annotated suggestion. The module also hooks `Enter` so execution telemetry is logged automatically.
-
-### Bash
-
-Add this to `~/.bashrc`:
-
-```bash
-source /path/to/repo/integrations/bash/shctrl.bash
-shctrl_enable
-```
-
-Press `Ctrl+g` to populate the current line. The script logs execution telemetry through a `DEBUG` trap.
-
-### Zsh
-
-Add this to `~/.zshrc`:
-
-```zsh
-source /path/to/repo/integrations/zsh/shctrl.zsh
-shctrl_enable
-```
-
-Press `Ctrl+g` to populate the current line. The script logs execution telemetry through a `preexec` hook.
-
 ## CLI Commands
 
 ```text
@@ -191,24 +121,3 @@ Environment variables:
 - `SHCTRL_TIMEOUT_SECONDS`
 - `SHCTRL_RETRIEVAL_THRESHOLD`
 - `SHCTRL_MAX_RETRIEVALS`
-
-## Evaluation Metrics
-
-`shctrl metrics` aggregates local telemetry into metrics aligned with the paper:
-
-- total suggestions
-- total executions
-- first-try success rate
-- edit-before-execute rate
-- retrieval grounding rate
-- risk annotation agreement rate
-- context switch count
-- median generation latency
-- median time to execution
-
-## Suggested GitHub Demo Flow
-
-1. Index the sample knowledge base.
-2. Show `shctrl suggest "restart the log service and verify health" --shell powershell --json`.
-3. Show the annotated command written into the shell buffer with `Ctrl+g`.
-4. Run `shctrl metrics` after a few suggestions to demonstrate the evaluation story.
