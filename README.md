@@ -212,7 +212,3 @@ Environment variables:
 2. Show `shctrl suggest "restart the log service and verify health" --shell powershell --json`.
 3. Show the annotated command written into the shell buffer with `Ctrl+g`.
 4. Run `shctrl metrics` after a few suggestions to demonstrate the evaluation story.
-
-## License
-
-MIT
