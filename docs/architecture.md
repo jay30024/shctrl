@@ -2,7 +2,7 @@
 
 ## Goal
 
-`shctrl` implements the paper's core idea: a shell-native assistant that stays inside the terminal, uses local inference, reuses internal operational knowledge, and surfaces command risk exactly where execution decisions happen.
+`shctrl` is a shell-native assistant that stays inside the terminal, uses local inference, reuses internal operational knowledge, and surfaces command risk exactly where execution decisions happen.
 
 ## Main Modules
 
@@ -60,7 +60,7 @@ The client talks to a local Ollama instance over HTTP:
 - `POST /api/generate` for command generation
 - `GET /api/tags` for health checks
 
-This keeps inference local and preserves the paper's privacy-focused deployment model.
+This keeps inference local and preserves a privacy-focused deployment model.
 
 ### 5. Risk Engine
 
@@ -102,16 +102,16 @@ Implemented in `integrations/`.
 
 These scripts preserve the user as the final executor.
 
-### 7. Telemetry and Evaluation
+### 7. Telemetry and Usage Reporting
 
 Implemented in `src/shctrl/telemetry.py`.
 
-Telemetry is stored locally as JSON Lines and supports the paper's evaluation framework:
+Telemetry is stored locally as JSON Lines and supports local usage reporting:
 
 - suggestion generation events
 - execution events
 - user annotation feedback
-- context switch logging
+- workflow interruption logging
 
 The `shctrl metrics` command aggregates these into summary metrics.
 
@@ -119,7 +119,7 @@ The `shctrl metrics` command aggregates these into summary metrics.
 
 ### Why a zero-dependency Python core?
 
-This keeps setup simple for a showcase project, avoids heavyweight packaging, and makes the product easier to run on enterprise workstations that prefer curated dependencies.
+This keeps setup simple, avoids heavyweight packaging, and makes the tool easier to run on enterprise workstations that prefer curated dependencies.
 
 ### Why hashed semantic vectors instead of external embedding libraries?
 

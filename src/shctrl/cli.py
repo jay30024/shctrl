@@ -66,11 +66,15 @@ def build_parser() -> argparse.ArgumentParser:
     feedback.add_argument("--agree", choices=["yes", "no"], required=True, help="Whether the annotation felt correct.")
     feedback.add_argument("--note", default="", help="Optional feedback note.")
 
-    context_switch = subparsers.add_parser("log-context-switch", help="Record a context switch for evaluation studies.")
+    context_switch = subparsers.add_parser(
+        "log-interruption",
+        aliases=["log-context-switch"],
+        help="Record a workflow interruption.",
+    )
     context_switch.add_argument("--request-id", required=True, help="Request id from a previous suggestion.")
     context_switch.add_argument("--destination", required=True, help="Where the user went, e.g. browser, docs, wiki.")
 
-    metrics = subparsers.add_parser("metrics", help="Aggregate local telemetry into evaluation metrics.")
+    metrics = subparsers.add_parser("metrics", help="Show local usage metrics.")
     metrics.add_argument("--json", action="store_true", help="Emit JSON payload.")
 
     return parser
@@ -167,8 +171,8 @@ def main(argv: list[str] | None = None) -> int:
         print("ok")
         return 0
 
-    if args.command == "log-context-switch":
-        telemetry.log_context_switch(
+    if args.command in {"log-interruption", "log-context-switch"}:
+        telemetry.log_workflow_interruption(
             request_id=args.request_id,
             destination=args.destination,
         )
